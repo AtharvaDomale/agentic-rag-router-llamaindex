@@ -9,29 +9,29 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.tools import QueryEngineTool
 from llama_index.core.query_engine.router_query_engine import RouterQueryEngine
 from llama_index.core.selectors import LLMSingleSelector
-from llama_index.llms.openai import OpenAI
-from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms.gemini import Gemini
+from llama_index.embeddings.gemini import GeminiEmbedding
 
 nest_asyncio.apply()
 
 
 def build_query_engine(pdf_path: str):
-    # Load document
     documents = SimpleDirectoryReader(
         input_files=[pdf_path]
     ).load_data()
 
-    # Split text
     splitter = SentenceSplitter(chunk_size=1024)
     nodes = splitter.get_nodes_from_documents(documents)
 
-    # Models
-    Settings.llm = OpenAI(model="gpt-3.5-turbo")
-    Settings.embed_model = OpenAIEmbedding(
-        model="text-embedding-ada-002"
+    # ✅ Gemini LLM + Embeddings
+    Settings.llm = Gemini(
+        model="models/gemini-1.5-flash"
     )
 
-    # Indexes
+    Settings.embed_model = GeminiEmbedding(
+        model_name="models/text-embedding-004"
+    )
+
     summary_index = SummaryIndex(nodes)
     vector_index = VectorStoreIndex(nodes)
 
@@ -39,6 +39,7 @@ def build_query_engine(pdf_path: str):
         response_mode="tree_summarize",
         use_async=True,
     )
+
     vector_engine = vector_index.as_query_engine()
 
     summary_tool = QueryEngineTool.from_defaults(
