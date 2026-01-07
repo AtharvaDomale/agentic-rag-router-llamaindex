@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+llama-index
+llama-index-llms-openai
+llama-index-embeddings-openai
+pypdf
+nest-asyncio
