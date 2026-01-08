@@ -25,7 +25,7 @@ def build_query_engine(pdf_path: str):
 
     # ✅ Gemini LLM + Embeddings
     Settings.llm = Gemini(
-        model="models/gemini-1.5-flash"
+        model="gemini-2.5-flash"
     )
 
     Settings.embed_model = GeminiEmbedding(
